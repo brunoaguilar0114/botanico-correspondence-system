@@ -1,6 +1,6 @@
 # Project Rules
 
-## Initial Understanding
+## Initial Understanding of the project
 
 Before making any modifications:
 
