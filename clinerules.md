@@ -119,11 +119,3 @@ Please begin analysis by exploring:
 3. Entry files (index.html, main.js, index.php, etc.)
 
 Once this analysis is complete, I'll be ready to request specific changes with full project context.
-
-```
-
-## Opción 3: Prompt Corto (PRÁCTICO)
-```
-
-Analyze the complete structure of this project before making changes.
-Identify the stack, architecture, conventions, and main configurations.
