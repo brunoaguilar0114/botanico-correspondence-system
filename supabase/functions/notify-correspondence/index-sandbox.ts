@@ -87,7 +87,7 @@ Deno.serve(async (req) => {
           <div class="content">
             <div class="greeting">¡Hola, ${recipientName}!</div>
             <p class="footer-text">Te informamos que has recibido un nuevo ingreso de correspondencia en Botánico. Ya puedes pasar a retirarlo o visualizar los detalles en tu panel.</p>
-            
+
             <div class="details-card">
               <div class="detail-row">
                 <span class="label">Remitente</span>
@@ -117,7 +117,7 @@ Deno.serve(async (req) => {
     `;
 
     // 5. Send using Resend
-    // IMPORTANT: If domain is not verified, use onboarding@resend.dev as 'from'
+    // USANDO DOMINIO SANDBOX: Solo funciona con el email registrado en Resend
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -125,7 +125,7 @@ Deno.serve(async (req) => {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'onboarding@resend.dev', // Dominio sandbox de Resend para pruebas
+        from: 'onboarding@resend.dev', // ⚠️ SANDBOX MODE: Cambiar a tu dominio verificado en producción
         to: [recipientEmail],
         subject: `📬 Nueva Correspondencia: ${senderName}`,
         html: htmlContent,
