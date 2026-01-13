@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vadavo | Gestión de Correspondencia</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "neu-bg-light": "#ecf0f3",
+                        "neu-bg-dark": "#1a212e",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg: #ecf0f3;
+            --shadow-dark: #d1d9e6;
+            --shadow-light: #ffffff;
+            --text: #4a5568;
+            --glass: rgba(236, 240, 243, 0.88);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --primary-glow: rgba(19, 91, 236, 0.15);
+        }
+
+        .dark {
+            --bg: #1a212e;
+            --shadow-dark: #0e121a;
+            --shadow-light: #262f42;
+            --text: #a0aec0;
+            --glass: rgba(26, 33, 46, 0.88);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --primary-glow: rgba(19, 91, 236, 0.25);
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .neu-surface {
+            background: var(--bg);
+            box-shadow: 15px 15px 30px var(--shadow-dark), -15px -15px 30px var(--shadow-light);
+        }
+
+        .neu-inset {
+            background: var(--bg);
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Estilos mejorados para Inputs con transiciones */
+        input.neu-inset {
+            border: 1px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        input.neu-inset:focus {
+            box-shadow: inset 10px 10px 20px var(--shadow-dark), 
+                        inset -10px -10px 20px var(--shadow-light),
+                        0 0 0 4px var(--primary-glow);
+            border-color: rgba(19, 91, 236, 0.4);
+            transform: scale(1.005);
+        }
+
+        .neu-btn {
+            background: var(--bg);
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neu-btn:active {
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            transform: scale(0.98);
+        }
+
+        .neu-btn-primary {
+            background: #135bec;
+            box-shadow: 6px 6px 12px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+            color: white;
+            transition: all 0.2s ease;
+        }
+        .neu-btn-primary:active {
+            box-shadow: inset 4px 4px 8px #0d3da1, inset -4px -4px 8px #1979ff;
+            transform: scale(0.98);
+        }
+
+        .neu-btn-dark {
+            background: #6e6e6e;
+            box-shadow: 6px 6px 12px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+            color: white;
+            transition: all 0.2s ease;
+        }
+        .neu-btn-dark:active {
+            box-shadow: inset 4px 4px 8px #4a4a4a, inset -4px -4px 8px #929292;
+            transform: scale(0.98);
+        }
+
+        input {
+            filter: none !important;
+            outline: none !important;
+            background: var(--bg) !important;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--shadow-dark); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #cbd5e0; }
+
+        .transition-theme {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="antialiased overflow-x-hidden">
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
