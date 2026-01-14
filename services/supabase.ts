@@ -453,11 +453,20 @@ export const auditService = {
     }
   },
 
-  async getLogs(filters?: { limit?: number; eventType?: string; userId?: string }) {
+  async getLogs(filters?: {
+    limit?: number;
+    offset?: number;
+    eventType?: string;
+    userId?: string;
+    status?: string;
+    resourceType?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
     try {
       let query = supabase
         .from('audit_logs')
-        .select('*')
+        .select('*', { count: 'exact' })
         .eq('is_legacy', false)
         .order('created_at', { ascending: false });
 
@@ -469,11 +478,31 @@ export const auditService = {
         query = query.eq('user_id', filters.userId);
       }
 
+      if (filters?.status) {
+        query = query.eq('status', filters.status);
+      }
+
+      if (filters?.resourceType) {
+        query = query.eq('resource_type', filters.resourceType);
+      }
+
+      if (filters?.startDate) {
+        query = query.gte('created_at', filters.startDate);
+      }
+
+      if (filters?.endDate) {
+        query = query.lte('created_at', filters.endDate);
+      }
+
       if (filters?.limit) {
         query = query.limit(filters.limit);
       }
 
-      const { data, error } = await query;
+      if (filters?.offset) {
+        query = query.range(filters.offset, filters.offset + (filters.limit || 50) - 1);
+      }
+
+      const { data, error, count } = await query;
 
       if (error) {
         console.error('Error fetching audit logs:', error);
@@ -483,19 +512,38 @@ export const auditService = {
           details: error.details,
           hint: error.hint
         });
-        
+
         // Si es un error de permisos, dar mensaje más claro
         if (error.code === '42501' || error.message?.includes('permission') || error.message?.includes('policy')) {
           console.error('Error de permisos: El usuario no tiene permisos para leer audit_logs. Verifica que sea super_admin.');
         }
-        
+
+        return { data: [], count: 0 };
+      }
+
+      console.log(`Successfully fetched ${data?.length || 0} audit logs (Total: ${count})`);
+      return { data: data || [], count: count || 0 };
+    } catch (err: any) {
+      console.error('Unexpected error in getLogs:', err);
+      return { data: [], count: 0 };
+    }
+  },
+
+  async getUsers() {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .order('full_name', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching users for filter:', error);
         return [];
       }
 
-      console.log(`Successfully fetched ${data?.length || 0} audit logs`);
       return data || [];
     } catch (err: any) {
-      console.error('Unexpected error in getLogs:', err);
+      console.error('Unexpected error in getUsers:', err);
       return [];
     }
   }
