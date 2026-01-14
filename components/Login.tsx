@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { VADAVO_LOGO } from '../constants';
 import { User } from '../types';
 import { supabase } from '../services/client';
 import { authService } from '../services/supabase';
@@ -66,67 +65,69 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-neu-bg transition-theme p-6">
-      <div className="w-full max-w-[440px] neu-surface rounded-[50px] p-12 relative overflow-hidden transition-theme">
-        <div className="flex flex-col items-center mb-10">
-          <div className="size-16 p-3 neu-btn rounded-2xl text-primary mb-4 flex items-center justify-center transition-theme">
-            {VADAVO_LOGO}
+    <div className="min-h-screen w-full flex transition-theme">
+      {/* Columna izquierda - Formulario */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-neu-bg transition-theme p-6 lg:p-8">
+        <div className="w-full max-w-[440px] neu-surface rounded-[40px] lg:rounded-[50px] p-8 lg:p-10 relative overflow-hidden transition-theme">
+          <div className="flex flex-col items-center mb-6 lg:mb-8">
+            <div className="size-12 lg:size-14 p-2.5 lg:p-3 rounded-xl lg:rounded-2xl bg-gray-900 dark:bg-gray-800 mb-3 lg:mb-4 flex items-center justify-center transition-theme">
+              <span className="text-white text-2xl lg:text-3xl font-black">B</span>
+            </div>
+            <h1 className="text-gray-700 dark:text-gray-100 text-xl lg:text-2xl font-black tracking-tight transition-theme">Botánico Coworking</h1>
+            <p className="text-[9px] lg:text-[10px] text-primary font-black uppercase tracking-[0.3em] mt-1.5 lg:mt-2">Correspondencia</p>
           </div>
-          <h1 className="text-gray-500 dark:text-gray-400 text-2xl font-bold tracking-tight">Vadavo</h1>
-          <p className="text-[10px] text-primary font-black uppercase tracking-[0.3em] mt-2">Coworking Space</p>
-        </div>
 
-        {mode === 'login' ? (
-          <form onSubmit={handleSubmit} className="space-y-6">
+          {mode === 'login' ? (
+            <form onSubmit={handleSubmit} className="space-y-5 lg:space-y-6">
             {error && (
               <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold text-center animate-in fade-in slide-in-from-top-2">
                 {error}
               </div>
-            )}
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-gray-400 ml-4">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@vadavo.com o tu email"
-                className="w-full h-12 neu-inset border-none rounded-full text-gray-600 dark:text-gray-300 px-6 focus:ring-0 transition-all placeholder:text-gray-300 dark:placeholder:text-gray-600"
-                required
-              />
-            </div>
+              )}
+              <div className="space-y-2.5 lg:space-y-3">
+                <label className="block text-xs lg:text-sm font-medium text-gray-400 ml-4">Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@vadavo.com o tu email"
+                  className="w-full h-11 lg:h-12 neu-inset border-none rounded-full text-gray-600 dark:text-gray-300 px-5 lg:px-6 focus:ring-0 transition-all placeholder:text-gray-300 dark:placeholder:text-gray-600 text-sm"
+                  required
+                />
+              </div>
 
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-gray-400 ml-4">Contraseña</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full h-12 neu-inset border-none rounded-full text-gray-600 dark:text-gray-300 px-6 focus:ring-0 transition-all placeholder:text-gray-300 dark:placeholder:text-gray-600"
-                required
-              />
-            </div>
+              <div className="space-y-2.5 lg:space-y-3">
+                <label className="block text-xs lg:text-sm font-medium text-gray-400 ml-4">Contraseña</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full h-11 lg:h-12 neu-inset border-none rounded-full text-gray-600 dark:text-gray-300 px-5 lg:px-6 focus:ring-0 transition-all placeholder:text-gray-300 dark:placeholder:text-gray-600 text-sm"
+                  required
+                />
+              </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full h-14 neu-btn-dark rounded-full text-lg font-medium tracking-wide mt-6 transition-theme disabled:opacity-50 flex items-center justify-center"
-            >
-              {loading ? <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div> : 'Entrar'}
-            </button>
-
-            <div className="text-center mt-4">
               <button
-                type="button"
-                onClick={() => { setMode('reset'); setError(null); }}
-                className="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-primary transition-colors"
+                type="submit"
+                disabled={loading}
+                className="w-full h-12 lg:h-14 neu-btn-dark rounded-full text-base lg:text-lg font-medium tracking-wide mt-4 lg:mt-6 transition-theme disabled:opacity-50 flex items-center justify-center"
               >
-                ¿Olvidaste tu contraseña?
+                {loading ? <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div> : 'Entrar'}
               </button>
-            </div>
-          </form>
-        ) : (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+
+              <div className="text-center mt-3 lg:mt-4">
+                <button
+                  type="button"
+                  onClick={() => { setMode('reset'); setError(null); }}
+                  className="text-[9px] lg:text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-primary transition-colors"
+                >
+                  ¿Olvidaste tu contraseña?
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="space-y-5 lg:space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
             {resetSent ? (
               <div className="text-center py-8 flex flex-col items-center gap-6">
                 <div className="size-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">

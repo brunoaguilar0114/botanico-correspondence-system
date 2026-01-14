@@ -28,6 +28,7 @@ const AppContent: React.FC = () => {
   const [items, setItems] = useState<Correspondence[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isRecovering, setIsRecovering] = useState(false);
 
   useEffect(() => {
@@ -329,6 +330,9 @@ const AppContent: React.FC = () => {
         role={currentUser.role}
         isOpen={isMobileNavOpen}
         onClose={() => setIsMobileNavOpen(false)}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        onProfileClick={() => setCurrentView('settings')}
       />
 
       <div className="flex-1 flex flex-col min-w-0">

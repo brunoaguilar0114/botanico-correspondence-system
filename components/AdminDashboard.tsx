@@ -115,107 +115,108 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         {/* Desktop Table View */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="hidden md:block overflow-x-auto -mx-4 px-4">
+          <table className="w-full text-left border-collapse border-spacing-y-3" style={{ borderSpacing: '0 0.75rem' }}>
             <thead>
-              <tr className="border-b border-gray-100 dark:border-gray-800 transition-theme">
-                <th className="pb-10 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em] pl-6">Destinatario</th>
-                <th className="pb-10 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em]">Servicio</th>
-                <th className="pb-10 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em] text-center">Estado</th>
+              <tr className="border-b-2 border-gray-100 dark:border-gray-800 transition-theme">
+                <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] pl-6">Destinatario</th>
+                <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em]">Servicio</th>
+                <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] text-center">Estado</th>
                 {(currentUser?.role === 'super_admin' || currentUser?.role === 'admin') && (
                   <>
-                    <th className="pb-10 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em] text-center">Coste</th>
-                    <th className="pb-10 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em]">Notas Internas</th>
+                    <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] text-center">Coste</th>
+                    <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em]">Notas</th>
                   </>
                 )}
-                <th className="pb-10 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em] text-center">Notificado</th>
-                <th className="pb-10 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em] text-center">Entregado Por</th>
-                <th className="pb-10 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em] text-right pr-6">Acciones</th>
+                <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] text-center">Email</th>
+                <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] text-center">Entregado</th>
+                <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] text-right pr-6">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50 dark:divide-gray-800/50 transition-theme">
+            <tbody>
               {filteredData.map((item) => (
-                <tr key={item.id} className="group hover:bg-white/30 dark:hover:bg-black/10 transition-colors relative">
-                  <td className="py-8 pl-6">
-                    <div className="flex items-center gap-5">
-                      <div className="size-14 neu-inset rounded-[20px] p-1.5 transition-theme">
-                        <div className={`w-full h-full rounded-[14px] flex items-center justify-center text-sm font-black bg-primary/5 text-primary`}>
+                <tr key={item.id} className="group hover:shadow-sm transition-all relative">
+                  <td className="py-6 pl-6 bg-white/40 dark:bg-black/5 rounded-l-[28px] transition-theme">
+                    <div className="flex items-center gap-4">
+                      <div className="size-12 neu-inset rounded-[18px] p-1.5 transition-theme shrink-0">
+                        <div className={`w-full h-full rounded-[12px] flex items-center justify-center text-xs font-black bg-primary/5 text-primary`}>
                           {item.recipient.split(' ').map(n => n[0]).join('')}
                         </div>
                       </div>
-                      <div className="flex flex-col">
-                        <span className="text-base font-black text-gray-700 dark:text-gray-300 transition-theme">{item.recipient}</span>
-                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">{item.sender}</span>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-sm font-black text-gray-700 dark:text-gray-300 transition-theme truncate">{item.recipient}</span>
+                        <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-0.5 truncate">{item.sender}</span>
                       </div>
                     </div>
                   </td>
-                  <td className="py-8">
-                    <div className="flex items-center gap-4">
-                      <div className="neu-inset size-10 flex items-center justify-center rounded-[14px] text-primary/60 transition-theme">
-                        <span className="material-symbols-outlined text-lg">
+                  <td className="py-6 bg-white/40 dark:bg-black/5 transition-theme">
+                    <div className="flex items-center gap-3">
+                      <div className="neu-inset size-9 flex items-center justify-center rounded-[12px] text-primary/60 transition-theme shrink-0">
+                        <span className="material-symbols-outlined text-base">
                           {item.type === PackageType.PACKAGE ? 'inventory_2' : 'mail'}
                         </span>
                       </div>
-                      <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{item.type}</span>
+                      <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">{item.type}</span>
                     </div>
                   </td>
-                  <td className="py-8 text-center">
-                    <span className={`inline-flex items-center gap-3 px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest border-2 transition-theme ${item.status === PackageStatus.SCANNED ? 'neu-inset text-primary border-primary/20 bg-primary/5' :
-                      item.status === PackageStatus.DELIVERED ? 'neu-inset text-emerald-600 border-emerald-500/20 bg-emerald-500/5' :
-                        'neu-inset text-yellow-600 border-yellow-500/20 bg-yellow-500/5'
+                  <td className="py-6 text-center bg-white/40 dark:bg-black/5 transition-theme">
+                    <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest border transition-theme ${item.status === PackageStatus.SCANNED ? 'text-primary border-primary/20 bg-primary/5' :
+                      item.status === PackageStatus.DELIVERED ? 'text-emerald-600 border-emerald-500/20 bg-emerald-500/5' :
+                        'text-yellow-600 border-yellow-500/20 bg-yellow-500/5'
                       }`}>
-                      {item.status === PackageStatus.SCANNED ? 'Digitalizado' : item.status}
+                      {item.status === PackageStatus.SCANNED ? 'Digital' : item.status}
                       {item.attachment_path && (
-                        <span className="material-symbols-outlined text-[14px] ml-1.5 text-primary">attach_file</span>
+                        <span className="material-symbols-outlined text-[12px] text-primary">attach_file</span>
                       )}
                     </span>
                   </td>
                   {(currentUser?.role === 'super_admin' || currentUser?.role === 'admin') && (
                     <>
-                      <td className="py-8 text-center">
-                        <span className="text-sm font-black text-gray-700 dark:text-gray-200">
+                      <td className="py-6 text-center bg-white/40 dark:bg-black/5 transition-theme">
+                        <span className="text-xs font-black text-gray-700 dark:text-gray-200">
                           {item.price ? `${item.price}€` : '-'}
                         </span>
                       </td>
-                      <td className="py-8">
-                        <span className="text-[10px] text-gray-400 font-bold truncate max-w-[150px] inline-block">
+                      <td className="py-6 bg-white/40 dark:bg-black/5 transition-theme">
+                        <span className="text-[9px] text-gray-400 font-bold truncate max-w-[120px] inline-block">
                           {item.internal_operational_notes || '-'}
                         </span>
                       </td>
                     </>
                   )}
-                  <td className="py-8 text-center">
-                    <div className="flex flex-col items-center gap-1">
-                      <div className={`material-symbols-outlined ${item.email_status === EmailStatus.SENT ? 'text-primary' : 'text-gray-300'}`}>
-                        {item.email_status === EmailStatus.SENT ? 'verified' : 'mail_lock'}
-                      </div>
-                      <span className={`text-[8px] font-black uppercase tracking-widest ${item.email_status === EmailStatus.SENT ? 'text-primary' : 'text-gray-300'}`}>
-                        {item.email_status === EmailStatus.SENT ? 'Notificado' : 'Pendiente'}
+                  <td className="py-6 text-center bg-white/40 dark:bg-black/5 transition-theme">
+                    <div className={`inline-flex items-center justify-center size-8 rounded-full transition-theme ${
+                      item.email_status === EmailStatus.SENT
+                        ? 'bg-primary/10 text-primary'
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-300'
+                    }`}>
+                      <span className="material-symbols-outlined text-base">
+                        {item.email_status === EmailStatus.SENT ? 'mark_email_read' : 'drafts'}
                       </span>
                     </div>
                   </td>
-                  <td className="py-8 text-center">
+                  <td className="py-6 text-center bg-white/40 dark:bg-black/5 transition-theme">
                     {item.delivered_by_name ? (
-                      <div className="flex flex-col items-center gap-1">
-                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">{item.delivered_by_name}</span>
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">{item.delivered_by_name}</span>
                         <span className="text-[8px] text-gray-400 font-bold">{item.date}</span>
                       </div>
                     ) : (
-                      <span className="text-gray-300 text-[10px] font-black uppercase tracking-widest">-</span>
+                      <span className="text-gray-300 text-[9px] font-black uppercase tracking-widest">-</span>
                     )}
                   </td>
-                  <td className="py-8 text-right pr-6">
-                    <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <td className="py-6 text-right pr-6 bg-white/40 dark:bg-black/5 rounded-r-[28px] transition-theme">
+                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           setEditingItem(item);
                           setIsModalOpen(true);
                         }}
-                        className="size-10 flex items-center justify-center rounded-full neu-btn text-blue-500 hover:scale-110 transition-all"
+                        className="size-9 flex items-center justify-center rounded-full neu-btn text-blue-500 hover:scale-110 transition-all"
                         title="Editar"
                       >
-                        <span className="material-symbols-outlined text-base">edit</span>
+                        <span className="material-symbols-outlined text-sm">edit</span>
                       </button>
 
                       <button
@@ -223,11 +224,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           e.stopPropagation();
                           setAttachmentTargetItemId(item.id);
                         }}
-                        className={`size-10 flex items-center justify-center rounded-full neu-btn transition-all hover:scale-110 ${(item.attachments?.length || 0) > 0 ? 'text-blue-500' : 'text-primary'
+                        className={`size-9 flex items-center justify-center rounded-full neu-btn transition-all hover:scale-110 ${(item.attachments?.length || 0) > 0 ? 'text-blue-500' : 'text-primary'
                           }`}
                         title={(item.attachments?.length || 0) > 0 ? 'Gestionar Archivos' : 'Digitalizar'}
                       >
-                        <span className="material-symbols-outlined text-base">
+                        <span className="material-symbols-outlined text-sm">
                           {(item.attachments?.length || 0) > 0 ? 'cloud_done' : 'document_scanner'}
                         </span>
                       </button>
@@ -238,10 +239,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             e.stopPropagation();
                             onUpdateStatus(item.id, PackageStatus.DELIVERED);
                           }}
-                          className="size-10 flex items-center justify-center rounded-full neu-btn text-emerald-500 hover:scale-110 transition-all"
+                          className="size-9 flex items-center justify-center rounded-full neu-btn text-emerald-500 hover:scale-110 transition-all"
                           title="Entregar"
                         >
-                          <span className="material-symbols-outlined text-base">task_alt</span>
+                          <span className="material-symbols-outlined text-sm">task_alt</span>
                         </button>
                       )}
 
@@ -250,10 +251,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           e.stopPropagation();
                           onResendNotification?.(item.id);
                         }}
-                        className={`size-10 flex items-center justify-center rounded-full neu-btn transition-all hover:scale-110 ${item.email_status === EmailStatus.SENT ? 'text-primary' : 'text-gray-400'}`}
+                        className={`size-9 flex items-center justify-center rounded-full neu-btn transition-all hover:scale-110 ${item.email_status === EmailStatus.SENT ? 'text-primary' : 'text-gray-400'}`}
                         title="Reenviar Notificación"
                       >
-                        <span className="material-symbols-outlined text-base">move_to_inbox</span>
+                        <span className="material-symbols-outlined text-sm">send</span>
                       </button>
 
                       {(currentUser?.role === 'super_admin' || currentUser?.role === 'admin') && (
@@ -268,10 +269,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               onConfirm: () => onDeleteRecord(item.id)
                             });
                           }}
-                          className="size-10 flex items-center justify-center rounded-full neu-btn text-red-400 hover:scale-110 transition-all"
+                          className="size-9 flex items-center justify-center rounded-full neu-btn text-red-400 hover:scale-110 transition-all"
                           title="Eliminar"
                         >
-                          <span className="material-symbols-outlined text-base">delete</span>
+                          <span className="material-symbols-outlined text-sm">delete</span>
                         </button>
                       )}
                     </div>

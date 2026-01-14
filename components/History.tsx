@@ -231,40 +231,42 @@ export const History: React.FC = () => {
         ) : logs.length > 0 ? (
           <>
             {/* Desktop Table View */}
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full text-left">
+            <div className="hidden md:block overflow-x-auto -mx-4 px-4">
+              <table className="w-full text-left border-collapse border-spacing-y-3" style={{ borderSpacing: '0 0.75rem' }}>
                 <thead>
-                  <tr className="border-b border-gray-100 dark:border-gray-800">
-                    <th className="pb-8 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em] pl-6">Evento</th>
-                    <th className="pb-8 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em]">Tipo</th>
-                    <th className="pb-8 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em]">Detalles</th>
-                    <th className="pb-8 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em]">Usuario</th>
-                    <th className="pb-8 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em]">Fecha</th>
-                    <th className="pb-8 text-[11px] font-black text-gray-400 uppercase tracking-[0.3em] text-right pr-6">Estado</th>
+                  <tr className="border-b-2 border-gray-100 dark:border-gray-800 transition-theme">
+                    <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] pl-6 w-[180px]">Evento</th>
+                    <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] w-[140px]">Tipo</th>
+                    <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em]">Detalles</th>
+                    <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] w-[160px]">Usuario</th>
+                    <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] w-[180px]">Fecha</th>
+                    <th className="pb-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] text-center pr-6 w-[120px]">Estado</th>
                   </tr>
                 </thead>
                 <tbody>
                   {logs.map((log) => (
-                    <tr key={log.id} className="hover:bg-white/20 dark:hover:bg-black/10 transition-colors">
-                      <td className="py-7 pl-6">
-                        <span className="text-sm font-black text-gray-700 dark:text-gray-300">{getEventLabel(log.event_type)}</span>
+                    <tr key={log.id} className="group hover:shadow-sm transition-all relative">
+                      <td className="py-6 pl-6 bg-white/40 dark:bg-black/5 rounded-l-[28px] transition-theme">
+                        <span className="text-sm font-black text-gray-700 dark:text-gray-300 transition-theme">{getEventLabel(log.event_type)}</span>
                       </td>
-                      <td className="py-7">
-                        <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full">
+                      <td className="py-6 bg-white/40 dark:bg-black/5 transition-theme">
+                        <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full inline-block">
                           {getResourceTypeLabel(log.resource_type)}
                         </span>
                       </td>
-                      <td className="py-7">
-                        <span className="text-sm text-gray-400 font-medium">{log.details}</span>
+                      <td className="py-6 bg-white/40 dark:bg-black/5 transition-theme">
+                        <span className="text-xs text-gray-500 dark:text-gray-400 font-medium line-clamp-2 transition-theme">{log.details}</span>
                       </td>
-                      <td className="py-7">
-                        <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
+                      <td className="py-6 bg-white/40 dark:bg-black/5 transition-theme">
+                        <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-4 py-2 rounded-full border border-primary/10 inline-block whitespace-nowrap">
                           {log.user_name || 'Sistema'}
                         </span>
                       </td>
-                      <td className="py-7 text-sm text-gray-400 font-bold">{formatDate(log.created_at)}</td>
-                      <td className="py-7 text-right pr-6">
-                        <span className={`text-[10px] font-black uppercase tracking-widest ${log.status === 'Exitoso' ? 'text-emerald-500' :
+                      <td className="py-6 bg-white/40 dark:bg-black/5 transition-theme">
+                        <span className="text-xs text-gray-500 dark:text-gray-400 font-bold transition-theme whitespace-nowrap">{formatDate(log.created_at)}</span>
+                      </td>
+                      <td className="py-6 text-center bg-white/40 dark:bg-black/5 rounded-r-[28px] transition-theme pr-6">
+                        <span className={`text-[9px] font-black uppercase tracking-widest inline-block ${log.status === 'Exitoso' ? 'text-emerald-600' :
                           log.status === 'Fallido' ? 'text-red-500' : 'text-primary'
                           }`}>
                           {log.status}
