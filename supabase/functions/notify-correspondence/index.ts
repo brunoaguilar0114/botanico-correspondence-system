@@ -68,9 +68,9 @@ Deno.serve(async (req) => {
           .detail-row:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
           .label { font-size: 10px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px; }
           .value { font-size: 16px; font-weight: 700; color: #334155; display: block; }
-          .location-card { background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%); border-radius: 16px; padding: 20px; margin-top: 24px; border-left: 4px solid #0072FF; }
+          .location-card { background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%); border-radius: 16px; padding: 20px; margin-top: 32px; border-left: 4px solid #0072FF; }
           .location-title { font-size: 11px; font-weight: 900; color: #0072FF; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-          .location-address { font-size: 14px; color: #475569; line-height: 1.6; margin: 0; }
+          .location-address { font-size: 14px; color: #1e293b; line-height: 1.6; margin: 0; font-weight: 600; }
           .footer-text { font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 32px; }
           .btn { display: inline-block; background-color: #0072FF; color: #ffffff !important; padding: 18px 36px; border-radius: 100px; text-decoration: none; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 10px 20px rgba(0,114,255,0.2); transition: all 0.3s ease; }
           .footer { padding: 40px; text-align: center; border-top: 1px solid #edf2f7; font-size: 12px; color: #94a3b8; background-color: #fafbfc; }
@@ -109,18 +109,18 @@ Deno.serve(async (req) => {
             <div class="location-card">
               <div class="location-title">📍 Dirección de Retiro</div>
               <p class="location-address">
-                <strong>Botánico Coworking</strong><br>
+                <strong style="color: #0f172a;">Botánico Coworking</strong><br>
                 C/ del Túria, 53<br>
                 Extramurs, 46008 València<br>
                 Valencia, España
               </p>
             </div>
 
-            <div style="text-align: center; margin-bottom: 24px;">
+            <div style="text-align: center; margin-bottom: 24px; margin-top: 32px;">
               <a href="${dashboardUrl}" class="btn">Ver mi correspondencia</a>
             </div>
 
-            <div style="background-color: #f8fafc; border-radius: 12px; padding: 16px; margin-top: 24px;">
+            <div style="background-color: #f8fafc; border-radius: 12px; padding: 16px; margin-top: 32px;">
               <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.5;">
                 💡 <strong>Accede de forma segura:</strong><br>
                 También puedes ingresar directamente a <span style="color: #0072FF; font-weight: 600;">botanico-correspondence-system-uiaj.vercel.app</span> e iniciar sesión con tu cuenta.
