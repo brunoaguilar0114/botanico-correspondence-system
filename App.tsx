@@ -242,10 +242,10 @@ const AppContent: React.FC = () => {
       // Client default view (history-like list)
       return (
         <div className="flex flex-col gap-10 animate-in fade-in duration-500">
-          <div className="flex justify-between items-end mb-4 px-4">
+          <div className="flex justify-between items-end mb-4 px-4 pt-6 md:pt-0">
             <div className="flex flex-col gap-2">
-              <h1 className="text-4xl font-black text-gray-800 dark:text-gray-100 transition-theme">Mi Correspondencia</h1>
-              <p className="text-gray-400 font-bold">Oficina Virtual - Botánico Coworking</p>
+              <h1 className="text-3xl md:text-4xl font-black text-gray-800 dark:text-gray-100 transition-theme">Mi Correspondencia</h1>
+              <p className="text-sm md:text-base text-gray-400 font-bold">Oficina Virtual - Botánico Coworking</p>
             </div>
             <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
               {filteredItems.length} Envíos

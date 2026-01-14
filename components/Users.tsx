@@ -166,7 +166,7 @@ export const Users: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-12 w-full animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-8 px-4 font-inter">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-8 px-4 pt-6 md:pt-0 font-inter">
         <div className="flex flex-col gap-3 w-full md:w-auto">
           <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-800 dark:text-gray-100 transition-theme">Usuarios</h1>
           <p className="text-gray-400 dark:text-gray-500 text-base md:text-lg font-bold transition-theme leading-tight">Gestión jerárquica de miembros del sistema.</p>

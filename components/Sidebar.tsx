@@ -69,12 +69,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, onLogout
           )}
 
           <div className="flex-1 lg:overflow-y-visible overflow-y-auto overflow-x-hidden -mr-4 pr-4 custom-scrollbar">
-            {/* Mobile Close Button */}
+            {/* Mobile Close Button - Mejorado para ser más visible */}
             <button
               onClick={onClose}
-              className="absolute top-0 right-0 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 lg:hidden z-10 transition-colors"
+              className="absolute top-5 right-5 size-12 flex items-center justify-center rounded-full neu-btn text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 hover:scale-110 lg:hidden z-10 transition-all shadow-lg"
+              title="Cerrar menú"
             >
-              <span className="material-symbols-outlined text-gray-400">close</span>
+              <span className="material-symbols-outlined text-2xl">close</span>
             </button>
 
             <div className={`flex items-center transition-all duration-300 ${isCollapsed ? 'flex-col gap-6 justify-center px-0 mb-8' : 'gap-4 px-2 mb-8'}`}>

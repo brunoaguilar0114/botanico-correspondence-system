@@ -38,7 +38,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   return (
     <div className="flex flex-col gap-12 w-full animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-8 px-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-8 px-4 pt-6 md:pt-0">
         <div className="flex flex-col gap-2 md:gap-3">
           <div className="flex items-center text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-gray-400 dark:text-gray-500 mb-1 md:mb-2 transition-theme">
             <span>Operaciones</span>

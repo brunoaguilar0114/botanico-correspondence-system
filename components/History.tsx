@@ -147,9 +147,9 @@ export const History: React.FC = () => {
   if (error && !hasRole(['super_admin'])) {
     return (
       <div className="flex flex-col gap-12 w-full animate-in fade-in duration-500">
-        <div className="flex flex-col gap-2 px-4">
-          <h1 className="text-5xl font-black tracking-tight text-gray-800 dark:text-gray-100">Historial Log</h1>
-          <p className="text-gray-400 dark:text-gray-500 text-lg font-bold">Auditoría completa de movimientos y eventos.</p>
+        <div className="flex flex-col gap-2 px-4 pt-6 md:pt-0">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-800 dark:text-gray-100">Historial Log</h1>
+          <p className="text-gray-400 dark:text-gray-500 text-base md:text-lg font-bold">Auditoría completa de movimientos y eventos.</p>
         </div>
         <div className="neu-surface rounded-[40px] md:rounded-[60px] p-12 text-center">
           <div className="flex flex-col items-center gap-6">
@@ -168,9 +168,9 @@ export const History: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-12 w-full animate-in fade-in duration-500">
-      <div className="flex flex-col gap-2 px-4">
-        <h1 className="text-5xl font-black tracking-tight text-gray-800 dark:text-gray-100">Historial Log</h1>
-        <p className="text-gray-400 dark:text-gray-500 text-lg font-bold">Auditoría completa de movimientos y eventos del sistema.</p>
+      <div className="flex flex-col gap-2 px-4 pt-6 md:pt-0">
+        <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gray-800 dark:text-gray-100">Historial Log</h1>
+        <p className="text-gray-400 dark:text-gray-500 text-base md:text-lg font-bold">Auditoría completa de movimientos y eventos del sistema.</p>
         <p className="text-xs text-gray-400 font-bold">Solo visible para super administradores</p>
       </div>
 

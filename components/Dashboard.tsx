@@ -57,7 +57,7 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-8 lg:gap-12 w-full animate-in fade-in duration-500">
-      <div className="flex flex-col gap-2 px-4">
+      <div className="flex flex-col gap-2 px-4 pt-6 md:pt-0">
         <h1 className="text-4xl lg:text-5xl font-black tracking-tight text-gray-800 dark:text-gray-100 transition-theme">Botánico Coworking</h1>
         <p className="text-gray-400 dark:text-gray-500 text-base lg:text-lg font-bold">Resumen operativo de la Oficina Virtual.</p>
       </div>
