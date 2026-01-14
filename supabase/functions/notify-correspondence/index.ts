@@ -64,10 +64,13 @@ Deno.serve(async (req) => {
           .content { padding: 40px; color: #1a1f36; }
           .greeting { font-size: 24px; font-weight: 900; margin-bottom: 24px; color: #000; }
           .details-card { background-color: #f8fafc; border: 1px solid #eef2f6; border-radius: 24px; padding: 32px; margin-bottom: 32px; }
-          .detail-row { display: flex; justify-content: space-between; margin-bottom: 16px; border-bottom: 1px solid #edf2f7; padding-bottom: 12px; }
+          .detail-row { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #edf2f7; }
           .detail-row:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
-          .label { font-size: 10px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
-          .value { font-size: 14px; font-weight: 700; color: #334155; }
+          .label { font-size: 10px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px; }
+          .value { font-size: 16px; font-weight: 700; color: #334155; display: block; }
+          .location-card { background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%); border-radius: 16px; padding: 20px; margin-top: 24px; border-left: 4px solid #0072FF; }
+          .location-title { font-size: 11px; font-weight: 900; color: #0072FF; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+          .location-address { font-size: 14px; color: #475569; line-height: 1.6; margin: 0; }
           .footer-text { font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 32px; }
           .btn { display: inline-block; background-color: #0072FF; color: #ffffff !important; padding: 18px 36px; border-radius: 100px; text-decoration: none; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 10px 20px rgba(0,114,255,0.2); transition: all 0.3s ease; }
           .footer { padding: 40px; text-align: center; border-top: 1px solid #edf2f7; font-size: 12px; color: #94a3b8; background-color: #fafbfc; }
@@ -98,18 +101,38 @@ Deno.serve(async (req) => {
                 <span class="value">${type}</span>
               </div>
               <div class="detail-row">
-                <span class="label">Fecha / Hora</span>
+                <span class="label">Fecha y Hora de Recepción</span>
                 <span class="value">${date} • ${time}</span>
               </div>
             </div>
 
-            <div style="text-align: center;">
-              <a href="${dashboardUrl}" class="btn">Abrir Dashboard</a>
+            <div class="location-card">
+              <div class="location-title">📍 Dirección de Retiro</div>
+              <p class="location-address">
+                <strong>Botánico Coworking</strong><br>
+                C/ del Túria, 53<br>
+                Extramurs, 46008 València<br>
+                Valencia, España
+              </p>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 24px;">
+              <a href="${dashboardUrl}" class="btn">Ver mi correspondencia</a>
+            </div>
+
+            <div style="background-color: #f8fafc; border-radius: 12px; padding: 16px; margin-top: 24px;">
+              <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.5;">
+                💡 <strong>Accede de forma segura:</strong><br>
+                También puedes ingresar directamente a <span style="color: #0072FF; font-weight: 600;">botanico-correspondence-system-uiaj.vercel.app</span> e iniciar sesión con tu cuenta.
+              </p>
             </div>
           </div>
           <div class="footer">
             &copy; 2026 Botánico Coworking. Todos los derechos reservados.<br>
-            Este es un email automático, por favor no respondas a este mensaje.
+            Este es un email automático, por favor no respondas a este mensaje.<br>
+            <span style="color: #94a3b8; font-size: 10px; margin-top: 8px; display: block;">
+              Si no solicitaste este email, puedes ignorarlo de manera segura.
+            </span>
           </div>
         </div>
       </body>
@@ -125,10 +148,15 @@ Deno.serve(async (req) => {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'onboarding@resend.dev', // Dominio sandbox de Resend para pruebas
+        from: 'Botánico Coworking <onboarding@resend.dev>', // Dominio sandbox de Resend para pruebas
         to: [recipientEmail],
-        subject: `📬 Nueva Correspondencia: ${senderName}`,
+        subject: `📬 Correspondencia de ${senderName} - Botánico Coworking`,
         html: htmlContent,
+        reply_to: 'info@botanico.space',
+        tags: [
+          { name: 'category', value: 'notification' },
+          { name: 'type', value: 'correspondence' }
+        ],
       }),
     });
 
