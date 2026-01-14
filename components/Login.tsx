@@ -128,72 +128,96 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </form>
           ) : (
             <div className="space-y-5 lg:space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-            {resetSent ? (
-              <div className="text-center py-8 flex flex-col items-center gap-6">
-                <div className="size-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-                  <span className="material-symbols-outlined text-4xl">mail</span>
-                </div>
-                <div className="space-y-2">
-                  <h2 className="text-xl font-black text-gray-700 dark:text-gray-100 uppercase tracking-tight">Email Enviado</h2>
-                  <p className="text-xs font-bold text-gray-400 px-4">
-                    Hemos enviado un enlace de recuperación a <span className="text-primary">{email}</span>. Revisa tu bandeja de entrada.
-                  </p>
-                </div>
-                <button
-                  onClick={() => { setMode('login'); setResetSent(false); }}
-                  className="w-full h-14 neu-btn rounded-full text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-primary transition-all"
-                >
-                  Volver al Inicio
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleResetPassword} className="space-y-6">
-                <div className="text-center mb-8">
-                  <h2 className="text-xl font-black text-gray-700 dark:text-gray-100 uppercase tracking-tight">Recuperar Acceso</h2>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">Enviaremos un enlace a tu correo</p>
-                </div>
-
-                {error && (
-                  <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold text-center">
-                    {error}
+              {resetSent ? (
+                <div className="text-center py-6 lg:py-8 flex flex-col items-center gap-5 lg:gap-6">
+                  <div className="size-14 lg:size-16 rounded-xl lg:rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                    <span className="material-symbols-outlined text-3xl lg:text-4xl">mail</span>
                   </div>
-                )}
-
-                <div className="space-y-3">
-                  <label className="block text-sm font-medium text-gray-400 ml-4">Tu Email</label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="ejemplo@email.com"
-                    className="w-full h-12 neu-inset border-none rounded-full text-gray-600 dark:text-gray-300 px-6 focus:ring-0 transition-all"
-                    required
-                  />
-                </div>
-
-                <div className="flex flex-col gap-4">
+                  <div className="space-y-2">
+                    <h2 className="text-lg lg:text-xl font-black text-gray-700 dark:text-gray-100 uppercase tracking-tight">Email Enviado</h2>
+                    <p className="text-xs font-bold text-gray-400 px-4">
+                      Hemos enviado un enlace de recuperación a <span className="text-primary">{email}</span>. Revisa tu bandeja de entrada.
+                    </p>
+                  </div>
                   <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full h-14 neu-btn-primary rounded-full text-lg font-medium tracking-wide transition-theme disabled:opacity-50 flex items-center justify-center"
+                    onClick={() => { setMode('login'); setResetSent(false); }}
+                    className="w-full h-12 lg:h-14 neu-btn rounded-full text-[9px] lg:text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-primary transition-all"
                   >
-                    {loading ? <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div> : 'Enviar Enlace'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setMode('login'); setError(null); }}
-                    className="w-full h-14 neu-btn rounded-full text-[10px] font-black uppercase tracking-widest text-gray-400 transition-all"
-                  >
-                    Cancelar
+                    Volver al Inicio
                   </button>
                 </div>
-              </form>
-            )}
+              ) : (
+                <form onSubmit={handleResetPassword} className="space-y-5 lg:space-y-6">
+                  <div className="text-center mb-6 lg:mb-8">
+                    <h2 className="text-lg lg:text-xl font-black text-gray-700 dark:text-gray-100 uppercase tracking-tight">Recuperar Acceso</h2>
+                    <p className="text-[9px] lg:text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">Enviaremos un enlace a tu correo</p>
+                  </div>
+
+                  {error && (
+                    <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold text-center">
+                      {error}
+                    </div>
+                  )}
+
+                  <div className="space-y-2.5 lg:space-y-3">
+                    <label className="block text-xs lg:text-sm font-medium text-gray-400 ml-4">Tu Email</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="ejemplo@email.com"
+                      className="w-full h-11 lg:h-12 neu-inset border-none rounded-full text-gray-600 dark:text-gray-300 px-5 lg:px-6 focus:ring-0 transition-all text-sm"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-3 lg:gap-4">
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full h-12 lg:h-14 neu-btn-primary rounded-full text-base lg:text-lg font-medium tracking-wide transition-theme disabled:opacity-50 flex items-center justify-center"
+                    >
+                      {loading ? <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div> : 'Enviar Enlace'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setMode('login'); setError(null); }}
+                      className="w-full h-12 lg:h-14 neu-btn rounded-full text-[9px] lg:text-[10px] font-black uppercase tracking-widest text-gray-400 transition-all"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+
+          <div className="mt-8 lg:mt-10 text-center">
+            <p className="text-[9px] lg:text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">Acceso a Botánico Coworking</p>
           </div>
-        )}
+        </div>
+      </div>
 
-        <div className="mt-12 text-center">
-          <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">Acceso a Botánico Coworking</p>
+      {/* Columna derecha - Imagen del coworking (solo visible en desktop) */}
+      <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center transition-theme"
+          style={{
+            backgroundImage: "url('/images/botanico-coworking.jpg')",
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover'
+          }}
+        >
+          {/* Overlay sutil para mejorar el diseño */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-gray-900/20"></div>
+
+          {/* Branding opcional en la imagen */}
+          <div className="absolute bottom-8 left-8 right-8">
+            <div className="backdrop-blur-md bg-white/10 dark:bg-black/20 rounded-3xl p-6 border border-white/20">
+              <h2 className="text-white text-2xl font-black mb-2">Bienvenido a Botánico</h2>
+              <p className="text-white/80 text-sm font-medium">Tu espacio de coworking en Valencia</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
