@@ -163,7 +163,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
           </button>
         )}
         <div className="flex flex-col gap-2">
-          <h1 className="text-5xl font-black tracking-tight text-gray-800 dark:text-gray-100 transition-theme">Mi Perfil</h1>
+          <h1 className="text-4xl font-black tracking-tight text-gray-800 dark:text-gray-100 transition-theme">Mi Perfil</h1>
           <p className="text-gray-400 dark:text-gray-500 text-lg font-bold transition-theme">Gestiona tu identidad y preferencias.</p>
         </div>
       </div>

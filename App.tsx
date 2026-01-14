@@ -30,6 +30,8 @@ const AppContent: React.FC = () => {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isRecovering, setIsRecovering] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [previousView, setPreviousView] = useState('dashboard');
 
   useEffect(() => {
     // Detect recovery link
@@ -38,6 +40,23 @@ const AppContent: React.FC = () => {
       setIsRecovering(true);
     }
   }, []);
+
+  // Handle view transitions with animation
+  const handleViewChange = (newView: string) => {
+    if (newView === currentView) return;
+
+    // Close mobile nav when changing views
+    setIsMobileNavOpen(false);
+
+    setIsTransitioning(true);
+    setPreviousView(currentView);
+
+    // Pequeño delay para la animación de salida
+    setTimeout(() => {
+      setCurrentView(newView);
+      setIsTransitioning(false);
+    }, 150);
+  };
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('vadavo-theme');
@@ -233,15 +252,24 @@ const AppContent: React.FC = () => {
   }, [items, searchQuery]);
 
   const renderView = () => {
+    // Determinar la clase de animación basada en el estado de transición
+    const animationClass = isTransitioning
+      ? 'animate-out fade-out slide-out-to-bottom-4 duration-150'
+      : 'animate-in fade-in slide-in-from-bottom-4 duration-300';
+
     // Shared view for all users
     if (currentView === 'settings') {
-      return <Settings onBack={() => setCurrentView('dashboard')} />;
+      return (
+        <div key="settings" className={animationClass}>
+          <Settings onBack={() => handleViewChange('dashboard')} />
+        </div>
+      );
     }
 
     if (!isStaff()) {
       // Client default view (history-like list)
       return (
-        <div className="flex flex-col gap-10 animate-in fade-in duration-500">
+        <div key="client-correspondence" className={`flex flex-col gap-10 ${animationClass}`}>
           <div className="flex justify-between items-end mb-4 px-4 pt-6 md:pt-0">
             <div className="flex flex-col gap-2">
               <h1 className="text-3xl md:text-4xl font-black text-gray-800 dark:text-gray-100 transition-theme">Mi Correspondencia</h1>
@@ -270,33 +298,55 @@ const AppContent: React.FC = () => {
 
     switch (view) {
       case 'dashboard':
-        return <Dashboard />;
+        return (
+          <div key="dashboard" className={animationClass}>
+            <Dashboard />
+          </div>
+        );
       case 'management':
         return (
-          <AdminDashboard
-            currentUser={currentUser}
-            data={filteredItems}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            onNewRecord={handleNewRecord}
-            onUpdateStatus={handleUpdateStatus}
-            onUpdateRecord={handleUpdateRecord}
-            onDeleteRecord={handleDeleteRecord}
-            onResendNotification={handleResendNotification}
-            onRefresh={refreshData}
-          />
+          <div key="management" className={animationClass}>
+            <AdminDashboard
+              currentUser={currentUser}
+              data={filteredItems}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              onNewRecord={handleNewRecord}
+              onUpdateStatus={handleUpdateStatus}
+              onUpdateRecord={handleUpdateRecord}
+              onDeleteRecord={handleDeleteRecord}
+              onResendNotification={handleResendNotification}
+              onRefresh={refreshData}
+            />
+          </div>
         );
       case 'history':
         // Solo super_admin puede ver el historial de auditoría
         if (currentUser?.role === 'super_admin') {
-          return <History />;
+          return (
+            <div key="history" className={animationClass}>
+              <History />
+            </div>
+          );
         }
         // Si no es super_admin, redirigir al dashboard
-        return <Dashboard />;
+        return (
+          <div key="dashboard-redirect" className={animationClass}>
+            <Dashboard />
+          </div>
+        );
       case 'users':
-        return <Users />;
+        return (
+          <div key="users" className={animationClass}>
+            <Users />
+          </div>
+        );
       default:
-        return <Dashboard />;
+        return (
+          <div key="default-dashboard" className={animationClass}>
+            <Dashboard />
+          </div>
+        );
     }
   };
 
@@ -325,26 +375,26 @@ const AppContent: React.FC = () => {
     <div className="min-h-screen bg-neu-bg-light dark:bg-neu-bg-dark flex transition-theme font-inter overflow-x-hidden">
       <Sidebar
         currentView={currentView}
-        setView={setCurrentView}
+        setView={handleViewChange}
         onLogout={signOut}
         role={currentUser.role}
         isOpen={isMobileNavOpen}
         onClose={() => setIsMobileNavOpen(false)}
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-        onProfileClick={() => setCurrentView('settings')}
+        onProfileClick={() => handleViewChange('settings')}
       />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Navbar
           user={currentUser}
           onLogout={signOut}
-          onProfileClick={() => setCurrentView('settings')}
+          onProfileClick={() => handleViewChange('settings')}
           isDarkMode={isDarkMode}
           onToggleTheme={toggleTheme}
           onMenuClick={() => setIsMobileNavOpen(true)}
         />
-        <main className="flex-1 p-4 sm:p-8 lg:p-12 overflow-y-auto overflow-x-hidden">
+        <main className="flex-1 p-4 sm:p-8 lg:p-12 overflow-y-auto overflow-x-hidden transition-opacity duration-200">
           {renderView()}
         </main>
       </div>
