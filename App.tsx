@@ -322,7 +322,7 @@ const AppContent: React.FC = () => {
   console.log('Rendering App for role:', currentUser.role, 'View:', currentView);
 
   return (
-    <div className="min-h-screen bg-neu-bg-light dark:bg-neu-bg-dark flex transition-theme font-inter">
+    <div className="min-h-screen bg-neu-bg-light dark:bg-neu-bg-dark flex transition-theme font-inter overflow-x-hidden">
       <Sidebar
         currentView={currentView}
         setView={setCurrentView}
@@ -335,7 +335,7 @@ const AppContent: React.FC = () => {
         onProfileClick={() => setCurrentView('settings')}
       />
 
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Navbar
           user={currentUser}
           onLogout={signOut}
@@ -344,7 +344,7 @@ const AppContent: React.FC = () => {
           onToggleTheme={toggleTheme}
           onMenuClick={() => setIsMobileNavOpen(true)}
         />
-        <main className="flex-1 p-8 lg:p-12 overflow-y-auto">
+        <main className="flex-1 p-4 sm:p-8 lg:p-12 overflow-y-auto overflow-x-hidden">
           {renderView()}
         </main>
       </div>
