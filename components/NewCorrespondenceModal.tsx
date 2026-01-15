@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { PackageType, PackageStatus } from '../types';
 import { correspondenceService } from '../services/supabase';
+import { Portal } from './Portal';
 
 interface NewCorrespondenceModalProps {
   isOpen: boolean;
@@ -99,7 +100,8 @@ export const NewCorrespondenceModal: React.FC<NewCorrespondenceModalProps> = ({ 
   };
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center glass px-4 py-8 animate-in fade-in duration-300">
+    <Portal>
+      <div className="fixed inset-0 z-[110] flex items-center justify-center glass px-4 py-8 animate-in fade-in duration-300">
       <div className="neu-surface w-full max-w-[500px] max-h-full rounded-[40px] md:rounded-[60px] p-6 md:p-10 flex flex-col animate-in zoom-in duration-300">
         <div className="flex justify-between items-center mb-6 shrink-0">
           <div className="flex flex-col gap-0.5">
@@ -312,5 +314,6 @@ export const NewCorrespondenceModal: React.FC<NewCorrespondenceModalProps> = ({ 
         </form>
       </div>
     </div>
+    </Portal>
   );
 };

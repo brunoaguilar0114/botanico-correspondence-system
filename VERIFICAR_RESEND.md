@@ -17,7 +17,7 @@ El secret `RESEND_API_KEY` **NO está configurado** en Supabase.
 
 **NO tengo cuenta todavía:**
 1. Ve a: https://resend.com/signup
-2. Regístrate con `brunoaguilar95@gmail.com`
+2. Regístrate con tu email
 3. Verifica tu email
 4. Ve a: https://resend.com/api-keys
 5. Click en "Create API Key"

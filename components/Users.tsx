@@ -4,6 +4,7 @@ import { User, UserRole } from '../types';
 import { supabase } from '../services/client';
 import { useNotifications } from '../contexts/NotificationContext';
 import { UserHistoryModal } from './UserHistoryModal';
+import { Portal } from './Portal';
 
 export const Users: React.FC = () => {
   const { user: currentUser, canManage } = useAuth();
@@ -365,6 +366,7 @@ export const Users: React.FC = () => {
       </div>
 
       {isModalOpen && (
+        <Portal>
         <div className="fixed inset-0 z-[120] flex items-center justify-center glass px-6">
           <div className="neu-surface w-full max-w-[500px] rounded-[60px] p-12">
             <h2 className="text-2xl font-black text-gray-700 dark:text-gray-100 mb-8 uppercase tracking-tight">
@@ -412,6 +414,7 @@ export const Users: React.FC = () => {
             </form>
           </div>
         </div>
+        </Portal>
       )}
       {selectedHistoryUser && (
         <UserHistoryModal

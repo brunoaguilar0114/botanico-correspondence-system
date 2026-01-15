@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Portal } from './Portal';
 
 interface AuditLog {
   id: string;
@@ -58,7 +59,7 @@ export const AuditLogDetailModal: React.FC<AuditLogDetailModalProps> = ({ log, o
   };
 
   return (
-    <>
+    <Portal>
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] animate-in fade-in duration-200"
@@ -179,6 +180,6 @@ export const AuditLogDetailModal: React.FC<AuditLogDetailModalProps> = ({ log, o
           </div>
         </div>
       </div>
-    </>
+    </Portal>
   );
 };

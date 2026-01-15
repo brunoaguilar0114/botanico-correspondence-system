@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Correspondence } from '../types';
 import { correspondenceService, exportToCSV } from '../services/supabase';
+import { Portal } from './Portal';
 
 interface UserHistoryModalProps {
     user: User;
@@ -37,6 +38,7 @@ export const UserHistoryModal: React.FC<UserHistoryModalProps> = ({ user, onClos
     };
 
     return (
+        <Portal>
         <div className="fixed inset-0 z-[130] flex items-center justify-center p-0 md:p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
             <div
                 className="w-full h-full md:h-auto md:max-h-[90vh] md:max-w-4xl bg-neu-bg-light dark:bg-neu-bg-dark md:rounded-[40px] shadow-2xl overflow-hidden flex flex-col transition-all duration-500 animate-in zoom-in-95 slide-in-from-bottom-10"
@@ -170,5 +172,6 @@ export const UserHistoryModal: React.FC<UserHistoryModalProps> = ({ user, onClos
                 </div>
             </div>
         </div>
+        </Portal>
     );
 };

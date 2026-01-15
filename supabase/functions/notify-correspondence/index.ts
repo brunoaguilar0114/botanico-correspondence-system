@@ -123,7 +123,7 @@ Deno.serve(async (req) => {
             <div style="background-color: #f8fafc; border-radius: 12px; padding: 16px; margin-top: 32px;">
               <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.5;">
                 💡 <strong>Accede de forma segura:</strong><br>
-                También puedes ingresar directamente a <span style="color: #0072FF; font-weight: 600;">botanico-correspondence-system-uiaj.vercel.app</span> e iniciar sesión con tu cuenta.
+                También puedes ingresar directamente a <span style="color: #0072FF; font-weight: 600;">botanico.slupu.dev</span> e iniciar sesión con tu cuenta.
               </p>
             </div>
           </div>
@@ -148,11 +148,11 @@ Deno.serve(async (req) => {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'Botánico Coworking <onboarding@resend.dev>', // Dominio sandbox de Resend para pruebas
+        from: 'Botánico Coworking <notificaciones@botanico.slupu.dev>',
         to: [recipientEmail],
         subject: `📬 Correspondencia de ${senderName} - Botánico Coworking`,
         html: htmlContent,
-        reply_to: 'info@botanico.space',
+        reply_to: 'info@botanico.slupu.dev',
         tags: [
           { name: 'category', value: 'notification' },
           { name: 'type', value: 'correspondence' }
