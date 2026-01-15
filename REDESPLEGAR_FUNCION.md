@@ -100,10 +100,12 @@ Después de redesplegar, verifica:
 2. **Probar con curl:**
    ```bash
    curl -i --location --request POST 'https://afnwfaqudyonmpjuqnej.supabase.co/functions/v1/notify-correspondence' \
-     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmbndmYXF1ZHlvbm1wanVxbmVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwOTY2OTUsImV4cCI6MjA3OTY3MjY5NX0.DSucRJshbExhgqC_8kPWhhcsr5Q-NbWJEO_p8CNYp_k' \
+     --header 'Authorization: Bearer <TU_SUPABASE_ANON_KEY>' \
      --header 'Content-Type: application/json' \
-     --data '{"recipientName":"Test","recipientEmail":"brunoaguilar95@gmail.com","senderName":"Amazon","type":"Paquete","date":"13/01/2026","time":"22:00","dashboardUrl":"http://localhost"}'
+     --data '{"recipientName":"Test","recipientEmail":"tu-email@ejemplo.com","senderName":"Amazon","type":"Paquete","date":"13/01/2026","time":"22:00","dashboardUrl":"http://localhost"}'
    ```
+
+   > **Nota:** Reemplaza `<TU_SUPABASE_ANON_KEY>` con el valor de `VITE_SUPABASE_ANON_KEY` de tu archivo `.env`
 
    **Resultado esperado:**
    - Status 200
