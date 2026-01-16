@@ -71,12 +71,12 @@ export const NotificationSystemProvider: React.FC<{ children: React.ReactNode }>
         };
     }, [user?.id]);
 
-    const markAsRead = async (id: string) => {
+    const markAsRead = useCallback(async (id: string) => {
         const { error } = await notificationService.markAsRead(id);
         if (!error) {
             setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
         }
-    };
+    }, []);
 
     const markAllAsRead = async () => {
         if (!user) return;

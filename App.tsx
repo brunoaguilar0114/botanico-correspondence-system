@@ -81,7 +81,7 @@ const AppContent: React.FC = () => {
         setSelectedCorrespondenceId(correspondenceId);
       }
     });
-  }, [isStaff, setNavigationHandler]);
+  }, [isStaff, setNavigationHandler, handleViewChange]);
 
   // ... (keep existing refreshData and hooks) ...
 
