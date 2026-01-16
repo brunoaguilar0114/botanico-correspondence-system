@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../services/client';
 import { notificationService } from '../services/supabase';
 import { Notification } from '../types';
@@ -11,6 +11,8 @@ interface NotificationContextType {
     markAsRead: (id: string) => Promise<void>;
     markAllAsRead: () => Promise<void>;
     loading: boolean;
+    onNotificationClick: (notification: Notification) => void;
+    setNavigationHandler: (handler: (correspondenceId: string) => void) => void;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
@@ -19,6 +21,7 @@ export const NotificationSystemProvider: React.FC<{ children: React.ReactNode }>
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
+    const navigationHandlerRef = useRef<((correspondenceId: string) => void) | null>(null);
 
     const fetchNotifications = async () => {
         if (!user) return;
@@ -85,13 +88,33 @@ export const NotificationSystemProvider: React.FC<{ children: React.ReactNode }>
 
     const unreadCount = notifications.filter(n => !n.read).length;
 
+    const setNavigationHandler = useCallback((handler: (correspondenceId: string) => void) => {
+        navigationHandlerRef.current = handler;
+    }, []);
+
+    const onNotificationClick = useCallback(async (notification: Notification) => {
+        // Mark as read
+        await markAsRead(notification.id);
+
+        // Extract correspondence_id from link if available
+        // Link format expected: "/correspondence/{id}" or just the id
+        if (notification.link && navigationHandlerRef.current) {
+            const correspondenceId = notification.link.includes('/')
+                ? notification.link.split('/').pop() || notification.link
+                : notification.link;
+            navigationHandlerRef.current(correspondenceId);
+        }
+    }, [markAsRead]);
+
     return (
         <NotificationContext.Provider value={{
             notifications,
             unreadCount,
             markAsRead,
             markAllAsRead,
-            loading
+            loading,
+            onNotificationClick,
+            setNavigationHandler
         }}>
             {children}
         </NotificationContext.Provider>

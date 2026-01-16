@@ -81,3 +81,29 @@ export interface User {
   status?: 'active' | 'inactive';
   internal_notes?: string;
 }
+
+// Storage configuration types
+export interface StorageConfig {
+  id: string;
+  max_packages: number;
+  max_letters: number;
+  packages_warning_threshold: number;
+  packages_critical_threshold: number;
+  letters_warning_threshold: number;
+  letters_critical_threshold: number;
+  updated_at: string;
+  updated_by?: string;
+}
+
+export interface StorageStats {
+  used: number;
+  max: number;
+  percentage: number;
+  warningThreshold: number;
+  criticalThreshold: number;
+}
+
+export interface StorageOverview {
+  packages: StorageStats;
+  letters: StorageStats;
+}

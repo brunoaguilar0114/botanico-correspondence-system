@@ -15,13 +15,14 @@ import { supabase } from './services/client';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { correspondenceService, auditService } from './services/supabase';
 import { NotificationProvider, useNotifications } from './contexts/NotificationContext';
-import { NotificationSystemProvider } from './contexts/NotificationSystemContext';
+import { NotificationSystemProvider, useNotificationSystem } from './contexts/NotificationSystemContext';
 import { Toast, ToastContainer } from './components/Notification/Toast';
 import { Modal } from './components/Notification/Modal';
 
 const AppContent: React.FC = () => {
   const { user: currentUser, loading: authLoading, signOut, isStaff } = useAuth();
   const { toasts, removeToast, modal, hideModal, showToast } = useNotifications();
+  const { setNavigationHandler } = useNotificationSystem();
   const [currentView, setCurrentView] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -32,6 +33,7 @@ const AppContent: React.FC = () => {
   const [isRecovering, setIsRecovering] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [previousView, setPreviousView] = useState('dashboard');
+  const [selectedCorrespondenceId, setSelectedCorrespondenceId] = useState<string | null>(null);
 
   useEffect(() => {
     // Detect recovery link
@@ -65,6 +67,21 @@ const AppContent: React.FC = () => {
       document.documentElement.classList.add('dark');
     }
   }, []);
+
+  // Register navigation handler for notification clicks
+  useEffect(() => {
+    setNavigationHandler((correspondenceId: string) => {
+      // Navigate to management view and select the correspondence
+      if (isStaff()) {
+        setSelectedCorrespondenceId(correspondenceId);
+        handleViewChange('management');
+      } else {
+        // For clients, just navigate to their correspondence view
+        // The item will be visible in their list
+        setSelectedCorrespondenceId(correspondenceId);
+      }
+    });
+  }, [isStaff, setNavigationHandler]);
 
   // ... (keep existing refreshData and hooks) ...
 
@@ -317,6 +334,8 @@ const AppContent: React.FC = () => {
               onDeleteRecord={handleDeleteRecord}
               onResendNotification={handleResendNotification}
               onRefresh={refreshData}
+              selectedItemId={selectedCorrespondenceId}
+              onClearSelection={() => setSelectedCorrespondenceId(null)}
             />
           </div>
         );

@@ -1,5 +1,5 @@
 
-import { Correspondence, PackageStatus, EmailStatus, PackageType } from '../types';
+import { Correspondence, PackageStatus, EmailStatus, PackageType, StorageConfig, StorageOverview } from '../types';
 import { supabase } from './client';
 
 export const correspondenceService = {
@@ -321,11 +321,92 @@ export const correspondenceService = {
       }
     });
 
+    // 5. Notification Efficiency (SENT / (SENT + FAILED) * 100)
+    const { count: sentCount } = await supabase
+      .from('correspondence')
+      .select('*', { count: 'exact', head: true })
+      .eq('email_status', EmailStatus.SENT);
+
+    const { count: failedCount } = await supabase
+      .from('correspondence')
+      .select('*', { count: 'exact', head: true })
+      .eq('email_status', EmailStatus.FAILED);
+
+    const sent = sentCount || 0;
+    const failed = failedCount || 0;
+    const notificationEfficiency = sent + failed > 0
+      ? Math.round((sent / (sent + failed)) * 100)
+      : 100;
+
+    // 6. Storage stats by type (packages vs letters)
+    const [
+      { count: packagesUsed },
+      { count: lettersUsed },
+      storageConfigResult
+    ] = await Promise.all([
+      // Packages pending (type = 'Paquete' AND status != 'Entregado')
+      supabase
+        .from('correspondence')
+        .select('*', { count: 'exact', head: true })
+        .eq('type', PackageType.PACKAGE)
+        .neq('status', PackageStatus.DELIVERED),
+      // Letters pending (type IN ('Carta', 'Certificado') AND status != 'Entregado')
+      supabase
+        .from('correspondence')
+        .select('*', { count: 'exact', head: true })
+        .in('type', [PackageType.LETTER, PackageType.CERTIFIED])
+        .neq('status', PackageStatus.DELIVERED),
+      // Storage configuration
+      supabase
+        .from('storage_config')
+        .select('*')
+        .single()
+    ]);
+
+    // Default config if table doesn't exist or no data
+    const defaultConfig = {
+      max_packages: 50,
+      max_letters: 200,
+      packages_warning_threshold: 70,
+      packages_critical_threshold: 90,
+      letters_warning_threshold: 70,
+      letters_critical_threshold: 90
+    };
+
+    // Use fetched config or fallback to defaults
+    const config = storageConfigResult.data || defaultConfig;
+
+    if (storageConfigResult.error) {
+      console.warn('Storage config not available, using defaults:', storageConfigResult.error.message);
+    }
+
+    const packagesCount = packagesUsed || 0;
+    const lettersCount = lettersUsed || 0;
+
+    const storage: StorageOverview = {
+      packages: {
+        used: packagesCount,
+        max: config.max_packages,
+        percentage: config.max_packages > 0 ? Math.round((packagesCount / config.max_packages) * 100) : 0,
+        warningThreshold: config.packages_warning_threshold,
+        criticalThreshold: config.packages_critical_threshold
+      },
+      letters: {
+        used: lettersCount,
+        max: config.max_letters,
+        percentage: config.max_letters > 0 ? Math.round((lettersCount / config.max_letters) * 100) : 0,
+        warningThreshold: config.letters_warning_threshold,
+        criticalThreshold: config.letters_critical_threshold
+      }
+    };
+
     return {
       monthlyInbound: monthlyInbound || 0,
       pendingPickup: pendingPickup || 0,
       totalDigitized,
-      activityByDay
+      activityByDay,
+      notificationEfficiency,
+      storage
     };
   },
 
@@ -688,5 +769,44 @@ export const authService = {
       redirectTo: `${window.location.origin}${window.location.pathname}?type=recovery`,
     });
     return { error: error?.message || null };
+  }
+};
+
+// Storage Configuration Service
+export const storageConfigService = {
+  async getConfig(): Promise<StorageConfig | null> {
+    const { data, error } = await supabase
+      .from('storage_config')
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('Error fetching storage config:', error);
+      return null;
+    }
+
+    return data;
+  },
+
+  async updateConfig(updates: Partial<Omit<StorageConfig, 'id' | 'updated_at' | 'updated_by'>>): Promise<{ error: string | null }> {
+    const { error } = await supabase
+      .from('storage_config')
+      .update(updates)
+      .eq('id', '00000000-0000-0000-0000-000000000001');
+
+    if (error) {
+      console.error('Error updating storage config:', error);
+      return { error: error.message };
+    }
+
+    return { error: null };
+  },
+
+  canEdit(userRole: string): boolean {
+    return ['super_admin', 'admin'].includes(userRole);
+  },
+
+  canView(userRole: string): boolean {
+    return ['super_admin', 'admin', 'recepcionista'].includes(userRole);
   }
 };

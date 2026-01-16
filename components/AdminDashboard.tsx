@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNotifications } from '../contexts/NotificationContext';
 import { Correspondence, PackageStatus, EmailStatus, PackageType, User } from '../types';
 import { NewCorrespondenceModal } from './NewCorrespondenceModal';
@@ -16,10 +16,12 @@ interface AdminDashboardProps {
   onDeleteRecord: (id: string) => Promise<void>;
   onRefresh: () => Promise<void>;
   onResendNotification?: (id: string) => Promise<void>;
+  selectedItemId?: string | null;
+  onClearSelection?: () => void;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
-  currentUser, data, searchQuery, setSearchQuery, onNewRecord, onUpdateStatus, onUpdateRecord, onDeleteRecord, onRefresh, onResendNotification
+  currentUser, data, searchQuery, setSearchQuery, onNewRecord, onUpdateStatus, onUpdateRecord, onDeleteRecord, onRefresh, onResendNotification, selectedItemId, onClearSelection
 }) => {
   const { showModal } = useNotifications();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,6 +30,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [attachmentTargetItemId, setAttachmentTargetItemId] = useState<string | null>(null);
 
   const activeAttachmentItem = data.find(item => item.id === attachmentTargetItemId);
+
+  // Open modal when selectedItemId is set (from notification click)
+  useEffect(() => {
+    if (selectedItemId && data.length > 0) {
+      const selectedItem = data.find(item => item.id === selectedItemId);
+      if (selectedItem) {
+        setEditingItem(selectedItem);
+        setIsModalOpen(true);
+        // Clear selection after opening modal
+        onClearSelection?.();
+      }
+    }
+  }, [selectedItemId, data, onClearSelection]);
 
   const filteredData = data.filter(item => {
     if (activeTab === 'pending') {
