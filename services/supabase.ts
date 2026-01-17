@@ -430,11 +430,16 @@ export const correspondenceService = {
     if (item.recipient_id) {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('notification_email, email, full_name')
+        .select('notification_email, email, full_name, email_notifications')
         .eq('id', item.recipient_id)
         .single();
 
       if (profile) {
+        // Verificar si el usuario tiene desactivadas las notificaciones por email
+        if (profile.email_notifications === false) {
+          return { error: 'El usuario ha desactivado las notificaciones por email en sus preferencias.' };
+        }
+
         // Priority: 1. notification_email, 2. profile email, 3. correspondence email
         emailToNotify = profile.notification_email || profile.email || item.recipient_email;
         nameToNotify = profile.full_name || item.recipient;

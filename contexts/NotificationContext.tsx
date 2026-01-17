@@ -39,16 +39,10 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         setToasts((prev) => prev.filter((t) => t.id !== id));
     }, []);
 
-    const showToast = useCallback((message: string, type: NotificationType = 'info', duration: number = 0) => {
+    const showToast = useCallback((message: string, type: NotificationType = 'info', duration: number = 5000) => {
         const id = Math.random().toString(36).substr(2, 9);
         setToasts((prev) => [...prev, { id, message, type, duration }]);
-
-        if (duration > 0) {
-            setTimeout(() => {
-                removeToast(id);
-            }, duration);
-        }
-    }, [removeToast]);
+    }, []);
 
     const showModal = useCallback((config: ModalConfig) => {
         setModal(config);

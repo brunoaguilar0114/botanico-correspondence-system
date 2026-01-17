@@ -78,13 +78,13 @@ export const NotificationSystemProvider: React.FC<{ children: React.ReactNode }>
         }
     }, []);
 
-    const markAllAsRead = async () => {
+    const markAllAsRead = useCallback(async () => {
         if (!user) return;
         const { error } = await notificationService.markAllAsRead(user.id);
         if (!error) {
             setNotifications(prev => prev.map(n => ({ ...n, read: true })));
         }
-    };
+    }, [user]);
 
     const unreadCount = notifications.filter(n => !n.read).length;
 

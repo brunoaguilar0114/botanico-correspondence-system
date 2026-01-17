@@ -100,6 +100,37 @@
   opacity: 1;
 }
 
+/* Toast Progress Bar */
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: currentColor;
+  opacity: 0.3;
+  border-radius: 0 0 0 1rem;
+}
+
+.toast-item.success .toast-progress {
+  background: #10b981;
+  opacity: 0.5;
+}
+
+.toast-item.error .toast-progress {
+  background: #ef4444;
+  opacity: 0.5;
+}
+
+.toast-item.warning .toast-progress {
+  background: #f59e0b;
+  opacity: 0.5;
+}
+
+.toast-item.info .toast-progress {
+  background: #135bec;
+  opacity: 0.5;
+}
+
 /* Modal Overlay */
 .modal-overlay {
   position: fixed;

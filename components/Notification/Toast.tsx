@@ -1,24 +1,58 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 
 interface ToastProps {
     id: string;
     type: 'success' | 'error' | 'info' | 'warning';
     message: string;
     onClose: (id: string) => void;
+    duration?: number;
 }
 
-export const Toast: React.FC<ToastProps> = ({ id, type, message, onClose }) => {
+export const Toast: React.FC<ToastProps> = ({ id, type, message, onClose, duration = 5000 }) => {
     const [isExiting, setIsExiting] = useState(false);
+    const [isPaused, setIsPaused] = useState(false);
+    const [progress, setProgress] = useState(100);
+    const startTimeRef = useRef<number>(Date.now());
+    const remainingTimeRef = useRef<number>(duration);
+
+    const handleClose = useCallback(() => {
+        setIsExiting(true);
+        setTimeout(() => onClose(id), 300);
+    }, [id, onClose]);
 
     useEffect(() => {
-        // We don't need a timeout here because the context handles the removal
-        // However, we could add a local "isExiting" state if we want to trigger
-        // exit animations before the context removes it.
-    }, []);
+        if (duration <= 0) return;
 
-    const handleClose = () => {
-        setIsExiting(true);
-        setTimeout(() => onClose(id), 300); // Wait for exit animation
+        let animationFrame: number;
+
+        const animate = () => {
+            if (isPaused) return;
+
+            const elapsed = Date.now() - startTimeRef.current;
+            const remaining = Math.max(0, remainingTimeRef.current - elapsed);
+            const newProgress = (remaining / duration) * 100;
+
+            setProgress(newProgress);
+
+            if (remaining <= 0) {
+                handleClose();
+            } else {
+                animationFrame = requestAnimationFrame(animate);
+            }
+        };
+
+        animationFrame = requestAnimationFrame(animate);
+        return () => cancelAnimationFrame(animationFrame);
+    }, [isPaused, duration, handleClose]);
+
+    const handleMouseEnter = () => {
+        setIsPaused(true);
+        remainingTimeRef.current = (progress / 100) * duration;
+    };
+
+    const handleMouseLeave = () => {
+        startTimeRef.current = Date.now();
+        setIsPaused(false);
     };
 
     const getIcon = () => {
@@ -35,6 +69,8 @@ export const Toast: React.FC<ToastProps> = ({ id, type, message, onClose }) => {
             className={`toast-item ${type} ${isExiting ? 'exit' : 'enter'}`}
             role="status"
             aria-live="polite"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
         >
             <div className="toast-icon-wrapper">
                 <span className="material-symbols-outlined toast-icon">{getIcon()}</span>
@@ -45,6 +81,15 @@ export const Toast: React.FC<ToastProps> = ({ id, type, message, onClose }) => {
             <button className="toast-close" onClick={handleClose} aria-label="Cerrar">
                 <span className="material-symbols-outlined">close</span>
             </button>
+            {duration > 0 && (
+                <div
+                    className="toast-progress"
+                    style={{
+                        width: `${progress}%`,
+                        transition: isPaused ? 'none' : 'width 100ms linear'
+                    }}
+                />
+            )}
         </div>
     );
 };

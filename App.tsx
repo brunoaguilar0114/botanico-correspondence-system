@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
 import { Login } from './components/Login';
@@ -44,21 +44,24 @@ const AppContent: React.FC = () => {
   }, []);
 
   // Handle view transitions with animation
-  const handleViewChange = (newView: string) => {
-    if (newView === currentView) return;
+  const handleViewChange = useCallback((newView: string) => {
+    setCurrentView(prev => {
+      if (newView === prev) return prev;
 
-    // Close mobile nav when changing views
-    setIsMobileNavOpen(false);
+      // Close mobile nav when changing views
+      setIsMobileNavOpen(false);
+      setIsTransitioning(true);
+      setPreviousView(prev);
 
-    setIsTransitioning(true);
-    setPreviousView(currentView);
+      // Pequeño delay para la animación de salida
+      setTimeout(() => {
+        setCurrentView(newView);
+        setIsTransitioning(false);
+      }, 150);
 
-    // Pequeño delay para la animación de salida
-    setTimeout(() => {
-      setCurrentView(newView);
-      setIsTransitioning(false);
-    }, 150);
-  };
+      return prev; // Keep current value during transition, setTimeout handles the change
+    });
+  }, []);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('vadavo-theme');
@@ -106,7 +109,6 @@ const AppContent: React.FC = () => {
     const { data: newRecord, error } = await correspondenceService.create(createPayload);
 
     if (!error && newRecord) {
-      await refreshData();
       await refreshData();
       showToast('Registro creado exitosamente', 'success');
 
@@ -426,6 +428,7 @@ const AppContent: React.FC = () => {
             type={toast.type}
             message={toast.message}
             onClose={removeToast}
+            duration={toast.duration}
           />
         ))}
       </ToastContainer>
