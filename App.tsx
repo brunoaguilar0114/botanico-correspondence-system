@@ -18,11 +18,18 @@ import { NotificationProvider, useNotifications } from './contexts/NotificationC
 import { NotificationSystemProvider, useNotificationSystem } from './contexts/NotificationSystemContext';
 import { Toast, ToastContainer } from './components/Notification/Toast';
 import { Modal } from './components/Notification/Modal';
+import { NotificationDetailModal } from './components/NotificationDetailModal';
 
 const AppContent: React.FC = () => {
   const { user: currentUser, loading: authLoading, signOut, isStaff } = useAuth();
   const { toasts, removeToast, modal, hideModal, showToast } = useNotifications();
-  const { setNavigationHandler } = useNotificationSystem();
+  const {
+    setNavigationHandler,
+    selectedNotification,
+    isDetailModalOpen,
+    closeDetailModal,
+    navigateToCorrespondence
+  } = useNotificationSystem();
   const [currentView, setCurrentView] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -443,6 +450,14 @@ const AppContent: React.FC = () => {
           confirmText={modal.confirmText}
           cancelText={modal.cancelText}
           onClose={hideModal}
+        />
+      )}
+
+      {isDetailModalOpen && (
+        <NotificationDetailModal
+          notification={selectedNotification}
+          onClose={closeDetailModal}
+          onNavigate={navigateToCorrespondence}
         />
       )}
     </div>

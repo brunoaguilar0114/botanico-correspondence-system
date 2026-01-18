@@ -13,6 +13,11 @@ interface NotificationContextType {
     loading: boolean;
     onNotificationClick: (notification: Notification) => void;
     setNavigationHandler: (handler: (correspondenceId: string) => void) => void;
+    // Modal de detalle
+    selectedNotification: Notification | null;
+    isDetailModalOpen: boolean;
+    closeDetailModal: () => void;
+    navigateToCorrespondence: (correspondenceId: string) => void;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
@@ -22,6 +27,10 @@ export const NotificationSystemProvider: React.FC<{ children: React.ReactNode }>
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
     const navigationHandlerRef = useRef<((correspondenceId: string) => void) | null>(null);
+
+    // Estado para el modal de detalle
+    const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
     const fetchNotifications = async () => {
         if (!user) return;
@@ -96,15 +105,22 @@ export const NotificationSystemProvider: React.FC<{ children: React.ReactNode }>
         // Mark as read
         await markAsRead(notification.id);
 
-        // Extract correspondence_id from link if available
-        // Link format expected: "/correspondence/{id}" or just the id
-        if (notification.link && navigationHandlerRef.current) {
-            const correspondenceId = notification.link.includes('/')
-                ? notification.link.split('/').pop() || notification.link
-                : notification.link;
+        // Abrir modal de detalle en lugar de navegar directamente
+        setSelectedNotification(notification);
+        setIsDetailModalOpen(true);
+    }, [markAsRead]);
+
+    const closeDetailModal = useCallback(() => {
+        setIsDetailModalOpen(false);
+        setSelectedNotification(null);
+    }, []);
+
+    const navigateToCorrespondence = useCallback((correspondenceId: string) => {
+        closeDetailModal();
+        if (navigationHandlerRef.current) {
             navigationHandlerRef.current(correspondenceId);
         }
-    }, [markAsRead]);
+    }, [closeDetailModal]);
 
     return (
         <NotificationContext.Provider value={{
@@ -114,7 +130,12 @@ export const NotificationSystemProvider: React.FC<{ children: React.ReactNode }>
             markAllAsRead,
             loading,
             onNotificationClick,
-            setNavigationHandler
+            setNavigationHandler,
+            // Modal de detalle
+            selectedNotification,
+            isDetailModalOpen,
+            closeDetailModal,
+            navigateToCorrespondence
         }}>
             {children}
         </NotificationContext.Provider>
