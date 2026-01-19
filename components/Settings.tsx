@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/useAuth';
 import { userService, authService } from '../services/supabase';
 import { useNotifications } from '../contexts/NotificationContext';
 import { supabase } from '../services/client';
+import { compressImageToWebP, validateFileSize, formatFileSize } from '../utils/imageCompression';
 
 interface SettingsProps {
   onBack?: () => void;
@@ -12,6 +13,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
   const { user, loading: authLoading, signOut, refreshUser } = useAuth();
   const { showToast } = useNotifications();
   const [loading, setLoading] = useState(false);
+  const [compressing, setCompressing] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -103,20 +105,41 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0 || !user) return;
 
-    setLoading(true);
     const file = e.target.files[0];
-    const { url, error } = await userService.uploadAvatar(user.id, file);
 
-    if (error) {
-      showToast('Error uploading avatar: ' + error.message, 'error');
-    } else if (url) {
-      setAvatarUrl(url);
-      await userService.updateProfile(user.id, { avatar_url: url });
-      // Refresh user data to update avatar across the entire app
-      await refreshUser();
-      showToast('Avatar actualizado correctamente', 'success');
+    // Validar tamaño máximo (3MB)
+    if (!validateFileSize(file, 3)) {
+      showToast(`La imagen no puede superar 3MB. Tamaño actual: ${formatFileSize(file.size)}`, 'error');
+      return;
     }
-    setLoading(false);
+
+    setCompressing(true);
+    showToast('Optimizando imagen...', 'info');
+
+    try {
+      // Comprimir y convertir a WebP
+      const compressedFile = await compressImageToWebP(file);
+
+      setCompressing(false);
+      setLoading(true);
+
+      const { url, error } = await userService.uploadAvatar(user.id, compressedFile);
+
+      if (error) {
+        showToast('Error uploading avatar: ' + error.message, 'error');
+      } else if (url) {
+        setAvatarUrl(url);
+        await userService.updateProfile(user.id, { avatar_url: url });
+        // Refresh user data to update avatar across the entire app
+        await refreshUser();
+        showToast(`Avatar actualizado (${formatFileSize(compressedFile.size)})`, 'success');
+      }
+    } catch (err) {
+      showToast('Error al procesar imagen', 'error');
+    } finally {
+      setCompressing(false);
+      setLoading(false);
+    }
   };
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
@@ -173,21 +196,26 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
           <div className="flex flex-col items-center gap-6 mb-10">
             <div className="relative group">
               <div className={`size-32 rounded-[40px] neu-inset p-2 transition-transform ${user?.role === 'recepcionista' ? 'cursor-default' : 'cursor-pointer active:scale-95'}`}
-                onClick={() => user?.role !== 'recepcionista' && fileInputRef.current?.click()}>
-                {avatarUrl || user?.avatar ? (
+                onClick={() => user?.role !== 'recepcionista' && !compressing && fileInputRef.current?.click()}>
+                {compressing ? (
+                  <div className="w-full h-full flex flex-col items-center justify-center gap-2 rounded-[32px]">
+                    <div className="animate-spin size-8 border-2 border-primary border-t-transparent rounded-full"></div>
+                    <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Optimizando...</span>
+                  </div>
+                ) : avatarUrl || user?.avatar ? (
                   <img src={avatarUrl || user?.avatar} alt="Profile" className="w-full h-full object-cover rounded-[32px]" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-300">
                     <span className="material-symbols-outlined text-5xl">person</span>
                   </div>
                 )}
-                {user?.role !== 'recepcionista' && (
+                {user?.role !== 'recepcionista' && !compressing && (
                   <div className="absolute inset-0 bg-black/50 rounded-[40px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                     <span className="material-symbols-outlined text-white text-3xl">photo_camera</span>
                   </div>
                 )}
               </div>
-              <input type="file" ref={fileInputRef} onChange={handleAvatarUpload} className="hidden" accept="image/*" disabled={user?.role === 'recepcionista'} />
+              <input type="file" ref={fileInputRef} onChange={handleAvatarUpload} className="hidden" accept="image/*" disabled={user?.role === 'recepcionista' || compressing} />
             </div>
 
             <div className="text-center">

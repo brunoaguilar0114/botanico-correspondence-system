@@ -11,47 +11,51 @@ interface ToastProps {
 export const Toast: React.FC<ToastProps> = ({ id, type, message, onClose, duration = 5000 }) => {
     const [isExiting, setIsExiting] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
-    const [progress, setProgress] = useState(100);
-    const startTimeRef = useRef<number>(Date.now());
+    const progressRef = useRef<HTMLDivElement>(null);
     const remainingTimeRef = useRef<number>(duration);
+    const pausedAtRef = useRef<number>(0);
 
     const handleClose = useCallback(() => {
         setIsExiting(true);
         setTimeout(() => onClose(id), 300);
     }, [id, onClose]);
 
+    // Manejar el cierre automático cuando la animación termina
+    const handleAnimationEnd = useCallback(() => {
+        if (!isPaused) {
+            handleClose();
+        }
+    }, [isPaused, handleClose]);
+
+    // Efecto para manejar pausa/reanudación
     useEffect(() => {
         if (duration <= 0) return;
 
-        let animationFrame: number;
+        const progressEl = progressRef.current;
+        if (!progressEl) return;
 
-        const animate = () => {
-            if (isPaused) return;
+        if (isPaused) {
+            // Guardar el tiempo restante cuando se pausa
+            const computedStyle = window.getComputedStyle(progressEl);
+            const currentWidth = parseFloat(computedStyle.width);
+            const parentWidth = progressEl.parentElement?.offsetWidth || 1;
+            const percentageRemaining = (currentWidth / parentWidth) * 100;
+            remainingTimeRef.current = (percentageRemaining / 100) * duration;
+            pausedAtRef.current = percentageRemaining;
 
-            const elapsed = Date.now() - startTimeRef.current;
-            const remaining = Math.max(0, remainingTimeRef.current - elapsed);
-            const newProgress = (remaining / duration) * 100;
-
-            setProgress(newProgress);
-
-            if (remaining <= 0) {
-                handleClose();
-            } else {
-                animationFrame = requestAnimationFrame(animate);
-            }
-        };
-
-        animationFrame = requestAnimationFrame(animate);
-        return () => cancelAnimationFrame(animationFrame);
-    }, [isPaused, duration, handleClose]);
+            // Pausar la animación manteniendo el ancho actual
+            progressEl.style.animationPlayState = 'paused';
+        } else {
+            // Reanudar la animación
+            progressEl.style.animationPlayState = 'running';
+        }
+    }, [isPaused, duration]);
 
     const handleMouseEnter = () => {
         setIsPaused(true);
-        remainingTimeRef.current = (progress / 100) * duration;
     };
 
     const handleMouseLeave = () => {
-        startTimeRef.current = Date.now();
         setIsPaused(false);
     };
 
@@ -83,11 +87,13 @@ export const Toast: React.FC<ToastProps> = ({ id, type, message, onClose, durati
             </button>
             {duration > 0 && (
                 <div
+                    ref={progressRef}
                     className="toast-progress"
                     style={{
-                        width: `${progress}%`,
-                        transition: isPaused ? 'none' : 'width 100ms linear'
+                        animation: `progress-shrink ${duration}ms linear forwards`,
+                        animationPlayState: isPaused ? 'paused' : 'running'
                     }}
+                    onAnimationEnd={handleAnimationEnd}
                 />
             )}
         </div>

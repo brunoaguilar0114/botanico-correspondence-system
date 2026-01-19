@@ -52,23 +52,19 @@ const AppContent: React.FC = () => {
 
   // Handle view transitions with animation
   const handleViewChange = useCallback((newView: string) => {
-    setCurrentView(prev => {
-      if (newView === prev) return prev;
+    if (newView === currentView) return;
 
-      // Close mobile nav when changing views
-      setIsMobileNavOpen(false);
-      setIsTransitioning(true);
-      setPreviousView(prev);
+    // Close mobile nav when changing views
+    setIsMobileNavOpen(false);
+    setIsTransitioning(true);
+    setPreviousView(currentView);
 
-      // Pequeño delay para la animación de salida
-      setTimeout(() => {
-        setCurrentView(newView);
-        setIsTransitioning(false);
-      }, 150);
-
-      return prev; // Keep current value during transition, setTimeout handles the change
-    });
-  }, []);
+    // Pequeño delay para la animación de salida
+    setTimeout(() => {
+      setCurrentView(newView);
+      setIsTransitioning(false);
+    }, 150);
+  }, [currentView]);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('vadavo-theme');
@@ -109,7 +105,7 @@ const AppContent: React.FC = () => {
     if (currentUser) {
       refreshData();
     }
-  }, [currentUser?.email]);
+  }, [currentUser?.email, currentUser?.role]);
 
   const handleNewRecord = async (payload: any) => {
     const { shouldNotify, ...createPayload } = payload;
@@ -379,7 +375,6 @@ const AppContent: React.FC = () => {
   };
 
   if (authLoading) {
-    console.log('Auth loading...');
     return (
       <div className="min-h-screen bg-neu-bg-light dark:bg-neu-bg-dark flex items-center justify-center transition-theme">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -396,8 +391,6 @@ const AppContent: React.FC = () => {
   }
 
   if (!currentUser) return <Login onLogin={() => { }} />;
-
-  console.log('Rendering App for role:', currentUser.role, 'View:', currentView);
 
   return (
     <div className="min-h-screen bg-neu-bg-light dark:bg-neu-bg-dark flex transition-theme font-inter overflow-x-hidden">

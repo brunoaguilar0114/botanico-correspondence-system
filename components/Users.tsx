@@ -106,21 +106,60 @@ export const Users: React.FC = () => {
     setActiveMenu(null);
   };
 
-  const handleDeleteUser = (user: User) => {
+  const handleDeleteUser = async (user: User) => {
     setActiveMenu(null);
+
+    // Verificar si el usuario tiene datos asociados
+    const { count: correspondenceCount } = await supabase
+      .from('correspondence')
+      .select('*', { count: 'exact', head: true })
+      .or(`recipient_id.eq.${user.id},delivered_by.eq.${user.id}`);
+
+    const hasAssociatedData = (correspondenceCount || 0) > 0;
+    const isSuperAdmin = currentUser?.role === 'super_admin';
+
+    // Construir mensaje según el contexto
+    let message = `¿Estás seguro de que deseas eliminar a ${user.name}?`;
+
+    if (hasAssociatedData) {
+      if (isSuperAdmin) {
+        message = `⚠️ ${user.name} tiene ${correspondenceCount} registro(s) de correspondencia asociados.\n\nComo super administrador, puedes eliminar este usuario. La correspondencia asociada será desvinculada pero no eliminada.\n\n¿Deseas continuar?`;
+      } else {
+        showToast(`No se puede eliminar: ${user.name} tiene ${correspondenceCount} registro(s) de correspondencia asociados. Solo un super administrador puede eliminarlo.`, 'error');
+        return;
+      }
+    } else {
+      message += ' Esta acción no se puede deshacer.';
+    }
+
     showModal({
       title: 'Eliminar Usuario',
-      message: `¿Estás seguro de que deseas eliminar a ${user.name}? Esta acción no se puede deshacer.`,
+      message,
       type: 'confirm',
       confirmText: 'Eliminar',
       onConfirm: async () => {
-        const { error } = await supabase.functions.invoke('delete-user', {
+        const { data, error } = await supabase.functions.invoke('delete-user', {
           body: { userId: user.id }
         });
+
         if (error) {
-          showToast('Error al eliminar usuario: ' + error.message, 'error');
+          // Intentar parsear el error del body si existe
+          let errorMessage = error.message;
+          try {
+            const errorBody = (error as any).context?.body;
+            if (errorBody) {
+              const parsed = typeof errorBody === 'string' ? JSON.parse(errorBody) : errorBody;
+              if (parsed.error) errorMessage = parsed.error;
+            }
+          } catch (e) { }
+          showToast('Error al eliminar usuario: ' + errorMessage, 'error');
         } else {
-          showToast('Usuario eliminado exitosamente', 'success');
+          const deletedInfo = data?.deletedData;
+          let successMessage = 'Usuario eliminado exitosamente';
+          if (deletedInfo?.correspondenceUnlinked > 0) {
+            successMessage += ` (${deletedInfo.correspondenceUnlinked} registros desvinculados)`;
+          }
+          showToast(successMessage, 'success');
           fetchUsers();
         }
       }

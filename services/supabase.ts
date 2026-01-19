@@ -727,12 +727,16 @@ export const userService = {
   },
 
   async uploadAvatar(userId: string, file: File) {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${userId}/${Math.random()}.${fileExt}`;
+    // Determinar extensión basada en el tipo de archivo
+    const fileExt = file.type === 'image/webp' ? 'webp' : file.name.split('.').pop();
+    const fileName = `${userId}/${Date.now()}.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
       .from('avatars')
-      .upload(fileName, file, { upsert: true });
+      .upload(fileName, file, {
+        upsert: true,
+        contentType: file.type
+      });
 
     if (uploadError) return { url: null, error: uploadError };
 
@@ -741,11 +745,12 @@ export const userService = {
       .getPublicUrl(fileName);
 
     if (!uploadError && publicUrl) {
+      const fileSizeKB = (file.size / 1024).toFixed(1);
       await auditService.logEvent({
         eventType: 'UPDATE',
         resourceType: 'USER',
         resourceId: userId,
-        details: 'Avatar actualizado'
+        details: `Avatar actualizado (${fileExt.toUpperCase()}, ${fileSizeKB}KB)`
       });
     }
 
